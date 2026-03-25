@@ -64,7 +64,9 @@ h1 {
   </div>
 </div>
 <script>
-let todos = [];
+function saveTodos() { localStorage.setItem('todos', JSON.stringify(todos)); }
+function loadTodos() { return JSON.parse(localStorage.getItem('todos')) || []; }
+let todos = loadTodos();
 let filter = 'all';
 function setFilter(f) { filter = f; document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderTodos(); }
 function addTodo() {
@@ -89,11 +91,13 @@ function renderTodos() {
     li.addEventListener('click', () => { todo.completed = !todo.completed; renderTodos(); });
     list.appendChild(li);
   });
+  saveTodos();
 }
 function deleteTodo(id) { todos = todos.filter(t => t.id !== id); renderTodos(); }
 document.getElementById('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
 document.getElementById('add-btn').addEventListener('click', addTodo);
 document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
+renderTodos();
 </script>
 </body>
 </html>
