@@ -40,7 +40,8 @@ h1 {
 #add-btn { padding: 10px 20px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; cursor: pointer; font-family: inherit; }
 #add-btn:hover { opacity: 0.9; }
 #todo-list { list-style: none; }
-#todo-list li { padding: 12px 14px; border-bottom: 1px solid var(--border); background: #fff; }
+#todo-list li { padding: 12px 14px; border-bottom: 1px solid var(--border); background: #fff; cursor: pointer; transition: opacity 0.2s; }
+#todo-list li.completed { text-decoration: line-through; opacity: 0.5; }
 </style>
 </head>
 <body>
@@ -70,6 +71,8 @@ function renderTodos() {
   todos.forEach(todo => {
     const li = document.createElement('li');
     li.textContent = todo.text;
+    if (todo.completed) li.className = 'completed';
+    li.addEventListener('click', () => { todo.completed = !todo.completed; renderTodos(); });
     list.appendChild(li);
   });
 }
