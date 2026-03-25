@@ -44,6 +44,9 @@ h1 {
 #todo-list li.completed { text-decoration: line-through; opacity: 0.5; }
 .delete-btn { background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 16px; padding: 2px 6px; }
 .delete-btn:hover { color: #dc2626; }
+#filters { display: flex; gap: 8px; margin-top: 16px; }
+.filter-btn { padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; cursor: pointer; font-size: 13px; font-family: inherit; color: var(--text); }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -54,10 +57,16 @@ h1 {
     <button id="add-btn">Add</button>
   </div>
   <ul id="todo-list"></ul>
-  <div id="filters"></div>
+  <div id="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="active">Active</button>
+    <button class="filter-btn" data-filter="completed">Completed</button>
+  </div>
 </div>
 <script>
 let todos = [];
+let filter = 'all';
+function setFilter(f) { filter = f; document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderTodos(); }
 function addTodo() {
   const input = document.getElementById('todo-input');
   const text = input.value.trim();
@@ -70,7 +79,8 @@ function addTodo() {
 function renderTodos() {
   const list = document.getElementById('todo-list');
   list.innerHTML = '';
-  todos.forEach(todo => {
+  const filtered = filter === 'all' ? todos : todos.filter(t => filter === 'active' ? !t.completed : t.completed);
+  filtered.forEach(todo => {
     const li = document.createElement('li');
     if (todo.completed) li.className = 'completed';
     const span = document.createElement('span'); span.textContent = todo.text; li.appendChild(span);
@@ -83,6 +93,7 @@ function renderTodos() {
 function deleteTodo(id) { todos = todos.filter(t => t.id !== id); renderTodos(); }
 document.getElementById('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
 document.getElementById('add-btn').addEventListener('click', addTodo);
+document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
 </script>
 </body>
 </html>
